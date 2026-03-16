@@ -26,20 +26,6 @@ export const HomePage = () => {
         setImagen(e.target.files[0]);
     };
 
-    // const subirImagen = async () => {
-    //     const data = new FormData();
-    //     data.append("file", imagen);
-    //     data.append("upload_preset", "react_upload");
-
-    //     const res = await fetch("https://api.cloudinary.com/v1_1/diqfoqzib/image/upload", {
-    //         method: "POST",
-    //         body: data
-    //     });
-
-    //     const file = await res.json();
-    //     return file.secure_url;
-    // };
-
     const subirImagen = async () => {
         const data = new FormData();
         data.append("file", imagen);

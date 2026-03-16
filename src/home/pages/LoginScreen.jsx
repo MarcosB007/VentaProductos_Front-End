@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import accesorios from '../../api/accesoriosApi.js'
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 export const LoginScreen = () => {
 
@@ -12,6 +14,32 @@ export const LoginScreen = () => {
     email: '',
     rol: ''
   });
+
+  const handleNuevoUsuario = (e) => {
+    const { name, value } = e.target;
+    setNuevoUsuario({
+      ...nuevoUsuario,
+      [name]: value,
+    });
+  };
+
+  const handleFormulario = (e) => {
+    e.preventDefault();
+
+    createUsuario(nuevoUsuario);
+  }
+
+  const createUsuario = async () => {
+    try {
+
+      const res = await accesorios.post('/admin/createUsuario', nuevoUsuario);
+
+    } catch (error) {
+
+      console.log("Error al crear el usuario: ", error);
+
+    }
+  }
 
   const getUsuarios = async () => {
 
@@ -32,6 +60,43 @@ export const LoginScreen = () => {
 
   return (
     <div>
+
+      <Form onSubmit={handleFormulario}>
+        <Form.Group>
+          <Form.Label>Nombre</Form.Label>
+          <Form.Control
+            type="text"
+            name="nombre"
+            onChange={(e) => handleNuevoUsuario(e)}
+            placeholder="Ingresa tu nombre"
+            className="form-input"></Form.Control>
+        </Form.Group>
+        <Form.Group className="form-group" controlId="formApellido">
+          <Form.Label>Apellido</Form.Label>
+          <Form.Control
+            type="text"
+            name="apellido"
+            //value={nuevoUsuario.apellido}
+            onChange={(e) => handleNuevoUsuario(e)}
+            placeholder="Ingresa el apellido"
+            className="form-input"
+          />
+        </Form.Group>
+        <Form.Group className="form-group" controlId="formEmail">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            //value={nuevoUsuario.email}
+            onChange={(e) => handleNuevoUsuario(e)}
+            placeholder="Ingresa el email"
+            className="form-input"
+          />
+        </Form.Group>
+        <div className="form-button-container">
+          <Button type="submit" className="submit-button">Guardar</Button>
+        </div>
+      </Form>
 
       <h1>LOGIN SCREEN</h1>
 
