@@ -44,6 +44,16 @@ export const HomePage = () => {
         };
     };
 
+    const EliminarProducto = async (idProducto) => {
+        //POner alerta de confirmacion
+
+        try {
+            await accesorios.delete(`/admin/deleteProductoById/${idProducto}`);
+        } catch (error) {
+            console.log("Error al eliminar el producto: ", error);
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -117,6 +127,7 @@ export const HomePage = () => {
                                 Precio: ${prod.precio_lista}
                             </Card.Text>
                             <Button variant="primary">Comprar</Button>
+                            <Button onClick={() => EliminarProducto(prod.id)} variant="danger">Eliminar producto</Button>
                         </Card.Body>
                     </Card>
                 ))}
