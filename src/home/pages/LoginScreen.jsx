@@ -24,7 +24,7 @@ export const LoginScreen = () => {
   };
 
   useEffect(() => {
-    console.log("isAuthenticated:", isAuthenticated);
+    //console.log("isAuthenticated:", isAuthenticated);
   if (isAuthenticated) {
     navigate("/home");
   }

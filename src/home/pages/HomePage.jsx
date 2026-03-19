@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import accesorios from '../../api/accesoriosApi.js'
+import { useAuth } from "../../context/AuthContext.jsx";
 
 export const HomePage = () => {
+
+    const { isAuthenticated, logout, user } = useAuth();
 
     const [producto, setProducto] = useState({
         nombre: "",
@@ -93,24 +96,27 @@ export const HomePage = () => {
 
     return (
         <>
-
             <h1>HOME PAGE</h1>
 
-            <h2>Crear producto</h2>
+            {isAuthenticated && user.rol === "admin" && (
+                <>
+                    <h2>Crear producto</h2>
 
-            <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
 
-                <input type="text" name='nombre' placeholder='Nombre' onChange={handleProduct} />
-                <input type="text" name='descripcion' placeholder='Descripcion' onChange={handleProduct} />
-                <input type="number" name='stock' placeholder='Stock' onChange={handleProduct} />
-                <input type="number" name='precio_lista' placeholder='Precio' onChange={handleProduct} />
-                <input type="file" onChange={handleImage} />
+                        <input type="text" name='nombre' placeholder='Nombre' onChange={handleProduct} />
+                        <input type="text" name='descripcion' placeholder='Descripcion' onChange={handleProduct} />
+                        <input type="number" name='stock' placeholder='Stock' onChange={handleProduct} />
+                        <input type="number" name='precio_lista' placeholder='Precio' onChange={handleProduct} />
+                        <input type="file" onChange={handleImage} />
 
-                <button type='submit'>
-                    Crear producto
-                </button>
+                        <button type='submit'>
+                            Crear producto
+                        </button>
 
-            </form>
+                    </form>
+                </>
+            )}
 
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "20px" }}>
 
@@ -127,14 +133,23 @@ export const HomePage = () => {
                                 Precio: ${prod.precio_lista}
                             </Card.Text>
                             <Button variant="primary">Comprar</Button>
-                            <Button onClick={() => EliminarProducto(prod.id)} variant="danger">Eliminar producto</Button>
+                            {isAuthenticated && user.rol === "admin" && (
+                                <>
+                                    <Button onClick={() => EliminarProducto(prod.id)} variant="danger">Eliminar producto</Button>
+                                </>
+                            )}
                         </Card.Body>
                     </Card>
                 ))}
 
             </div>
 
-
+            <div>
+                <h1>Bienvenido, {user?.username}</h1>
+                <button onClick={logout} className="btn btn-danger">
+                    Cerrar Sesión
+                </button>
+            </div>
         </>
     )
 }

@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true);
             setUser(res.data);
 
-            console.log("LOGIN OK");
+            //console.log("LOGIN OK");
 
         } catch (error) {
             console.log("ERROR:", error);
@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }) => {
     const checkLogin = async () => {
         try {
             const token = Cookies.get("token");
-            console.log("TOKEN EN CHECK:", token);
+            //console.log("TOKEN EN CHECK:", token);
 
-            console.log("TOKEN:", token);
+            //console.log("TOKEN:", token);
 
             if (!token) {
                 setIsAuthenticated(false);
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
 
             const res = await verifyTokenRequest();
 
-            console.log("VERIFY RESPONSE:", res.data);
+            //console.log("VERIFY RESPONSE:", res.data);
 
             setUser(res.data);
             setIsAuthenticated(true);
@@ -117,7 +117,8 @@ export const AuthProvider = ({ children }) => {
                 loading,
                 signup,
                 signIn,
-                logout
+                logout,
+                useAuth
             }}
         >
             {children}
