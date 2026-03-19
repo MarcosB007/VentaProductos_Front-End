@@ -1,0 +1,76 @@
+/* Contenedor principal del Navbar */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000000; /* Fondo negro */
+  color: #ffffff; /* Letras blancas */
+  padding: 15px 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo del Logo / Título */
+.header-logo a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.header-logo h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+/* Contenedor de los enlaces */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espacio entre los enlaces */
+}
+
+/* Texto de bienvenida */
+.welcome-text {
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin-right: 10px;
+}
+
+/* Enlaces normales */
+.nav-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #aaaaaa; /* Un gris claro al pasar el mouse */
+}
+
+/* Enlace destacado (ej. Regístrate) */
+.nav-link-highlight {
+  border: 1px solid #ffffff;
+  padding: 5px 15px;
+  border-radius: 5px;
+}
+
+.nav-link-highlight:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Botón de Cerrar Sesión */
+.logout-btn {
+  background-color: #ff4d4d; /* Rojo suave */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #cc0000; /* Rojo más oscuro al pasar el mouse */
+}

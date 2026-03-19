@@ -1,0 +1,70 @@
+/* Contenedor principal del Footer */
+.footer-container {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 40px 30px 20px;
+  margin-top: auto; /* Ayuda a empujarlo al fondo si usas Flexbox en el body */
+  font-family: sans-serif;
+}
+
+/* Distribución de las columnas */
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Para que se adapte en pantallas pequeñas */
+  gap: 30px;
+  border-bottom: 1px solid #333333; /* Línea sutil de separación */
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+/* Cada columna individual */
+.footer-section {
+  flex: 1;
+  min-width: 200px; /* Evita que las columnas se aplasten demasiado */
+}
+
+.footer-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.footer-section p {
+  color: #cccccc;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Estilos para las listas de enlaces */
+.footer-section ul {
+  list-style: none; /* Quita los puntos de la lista */
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+/* Estilos para los enlaces (Links y a) */
+.footer-section a {
+  color: #cccccc;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Parte inferior del copyright */
+.footer-bottom {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #777777;
+}

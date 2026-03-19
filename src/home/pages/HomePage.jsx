@@ -3,17 +3,50 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import accesorios from '../../api/accesoriosApi.js'
 import { useAuth } from "../../context/AuthContext.jsx";
+import { Header } from "../../components/Header.jsx";
+import { Footer } from "../../components/Footer.jsx";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const HomePage = () => {
 
     const { isAuthenticated, logout, user } = useAuth();
+    const [categorias, setCategorias] = useState([]);
+    const [productos, setProductos] = useState([]);
+
+    // ESTADO PARA FILTRAR: Guardamos el ID de la categoría elegida
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
+    // OBTENER CATEGORIAS
+    const obtenerCategorias = async () => {
+        try {
+            const res = await accesorios.get("/admin/getCategorias");
+            setCategorias(res.data);
+        } catch (error) {
+            console.log("Error al obtener las categorias: ", error);
+        }
+    }
+
+    // LÓGICA DE FILTRADO (Se ejecuta en cada render automáticamente)
+    const productosFiltrados = categoriaSeleccionada
+        ? productos.filter(p => p.id_categoria === categoriaSeleccionada)
+        : productos;
+
+    // Función para manejar el clic en los botones de filtro
+    const filtrarProducto = (idCategoria) => {
+        if (categoriaSeleccionada === idCategoria) {
+            setCategoriaSeleccionada(null); // Si toca de nuevo la misma, quita el filtro
+        } else {
+            setCategoriaSeleccionada(idCategoria);
+        }
+    }
 
     const [producto, setProducto] = useState({
         nombre: "",
         descripcion: "",
         stock: 0,
         precio_lista: 0,
-        url_imagen: ""
+        url_imagen: "",
+        id_categoria: ""
     });
 
     const [imagen, setImagen] = useState(null);
@@ -48,10 +81,12 @@ export const HomePage = () => {
     };
 
     const EliminarProducto = async (idProducto) => {
-        //POner alerta de confirmacion
+        if (!window.confirm("¿Estás seguro de eliminar este producto?")) return;
 
         try {
             await accesorios.delete(`/admin/deleteProductoById/${idProducto}`);
+            // RECARGAMOS LA LISTA DESPUES DE ELIMINAR UN PRODUCTO
+            obtenerProductos();
         } catch (error) {
             console.log("Error al eliminar el producto: ", error);
         }
@@ -61,7 +96,6 @@ export const HomePage = () => {
         e.preventDefault();
 
         try {
-
             const imagenCloudinary = await subirImagen();
 
             const productoFinal = {
@@ -71,16 +105,34 @@ export const HomePage = () => {
             };
 
             await accesorios.post("/admin/createProducto", productoFinal);
+            alert("Producto creado con éxito");
 
-            alert("producto creado");
+            // LIMPIAMOS EL ESTADO DEL PRODUCTO
+            setProducto({
+                nombre: "",
+                descripcion: "",
+                stock: 0,
+                precio_lista: 0,
+                url_imagen: "",
+                id_categoria: ""
+            });
+
+            // LIMPIAMOS EL ESTADO DE LA IMAGEN
+            setImagen(null);
+
+            // LIMPIAMOS LOS CAMPOS DEL FORMULARIO
+            e.target.reset();
+
+            // RECARGAMOS LA LISTA DE PRODUCTOS
+            obtenerProductos();
+
 
         } catch (error) {
             console.log(error);
         }
     }
 
-    const [productos, setProductos] = useState([]);
-
+    // OBTENER PRODUCTOS
     const obtenerProductos = async () => {
         try {
             const res = await accesorios.get("/admin/productos");
@@ -92,64 +144,105 @@ export const HomePage = () => {
 
     useEffect(() => {
         obtenerProductos();
+        obtenerCategorias();
     }, []);
 
     return (
         <>
+            <Header />
             <h1>HOME PAGE</h1>
+            <h1>Bienvenido/a, {user?.username}</h1>
 
             {isAuthenticated && user.rol === "admin" && (
-                <>
+                <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
                     <h2>Crear producto</h2>
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}>
 
-                        <input type="text" name='nombre' placeholder='Nombre' onChange={handleProduct} />
-                        <input type="text" name='descripcion' placeholder='Descripcion' onChange={handleProduct} />
-                        <input type="number" name='stock' placeholder='Stock' onChange={handleProduct} />
-                        <input type="number" name='precio_lista' placeholder='Precio' onChange={handleProduct} />
-                        <input type="file" onChange={handleImage} />
+                        <input type="text" name='nombre' placeholder='Nombre' onChange={handleProduct} required />
+                        <textarea name='descripcion' placeholder='Descripcion' onChange={handleProduct} required />
+                        <input type="number" name='stock' placeholder='Stock' onChange={handleProduct} required />
+                        <input type="number" name='precio_lista' placeholder='Precio' onChange={handleProduct} required />
 
-                        <button type='submit'>
+                        {/* SELECT DE CATEGORÍAS */}
+                        <select
+                            name="id_categoria"
+                            onChange={handleProduct}
+                            value={producto.id_categoria}
+                            required
+                        >
+                            <option value="">-- Selecciona una categoría --</option>
+                            {categorias.map((categ) => (
+                                <option key={categ.id} value={categ.id}>
+                                    {categ.nombre}
+                                </option>
+                            ))}
+                        </select>
+
+                        <input type="file" onChange={handleImage} required />
+
+                        <button type='submit' className="btn btn-success">
                             Crear producto
                         </button>
 
                     </form>
-                </>
+                </div>
             )}
 
+            {/* BOTONES DE FILTRO */}
+            <div style={{ marginTop: "30px", marginBottom: "10px" }}>
+                <h3>Filtrar por categoría:</h3>
+                <ButtonGroup aria-label="Filtros">
+                    <Button
+                        variant={categoriaSeleccionada === null ? "primary" : "secondary"}
+                        onClick={() => setCategoriaSeleccionada(null)}
+                    >
+                        Todos
+                    </Button>
+                    {categorias.map((categ) => (
+                        <Button
+                            key={categ.id}
+                            onClick={() => filtrarProducto(categ.id)}
+                            variant={categoriaSeleccionada === categ.id ? "primary" : "secondary"}
+                        >
+                            {categ.nombre}
+                        </Button>
+                    ))}
+                </ButtonGroup>
+            </div>
+
+            {/* LISTADO DE PRODUCTOS FILTRADOS */}
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "20px" }}>
-
-                {productos.map((prod) => (
-                    <Card key={prod.id} style={{ width: '18rem' }}>
-                        <Card.Img variant="top" src={prod.url_imagen} />
-                        <Card.Body>
-                            <Card.Title>{prod.nombre}</Card.Title>
-                            <Card.Text>
-                                {prod.descripcion}
-                                <br />
-                                Stock: {prod.stock}
-                                <br />
-                                Precio: ${prod.precio_lista}
-                            </Card.Text>
-                            <Button variant="primary">Comprar</Button>
-                            {isAuthenticated && user.rol === "admin" && (
-                                <>
-                                    <Button onClick={() => EliminarProducto(prod.id)} variant="danger">Eliminar producto</Button>
-                                </>
-                            )}
-                        </Card.Body>
-                    </Card>
-                ))}
-
+                {productosFiltrados.length > 0 ? (
+                    productosFiltrados.map((prod) => (
+                        <Card key={prod.id} style={{ width: '18rem' }}>
+                            <Card.Img variant="top" src={prod.url_imagen} />
+                            <Card.Body>
+                                <Card.Title>{prod.nombre}</Card.Title>
+                                <Card.Text>
+                                    {prod.descripcion}<br />
+                                    <strong>Stock:</strong> {prod.stock}<br />
+                                    <strong>Precio:</strong> ${prod.precio_lista}
+                                </Card.Text>
+                                <Button variant="primary">Comprar</Button>
+                                {isAuthenticated && user.rol === "admin" && (
+                                    <Button
+                                        onClick={() => EliminarProducto(prod.id)}
+                                        variant="danger"
+                                        style={{ marginLeft: "10px" }}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                )}
+                            </Card.Body>
+                        </Card>
+                    ))
+                ) : (
+                    <p>No hay productos en esta categoría.</p>
+                )}
             </div>
 
-            <div>
-                <h1>Bienvenido, {user?.username}</h1>
-                <button onClick={logout} className="btn btn-danger">
-                    Cerrar Sesión
-                </button>
-            </div>
+            <Footer />
         </>
     )
 }
