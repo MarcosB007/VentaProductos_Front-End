@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { setAuthToken } from "../api/auth";
+import { loginRequest, setAuthToken, verifyTokenRequest } from "../api/auth.js";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
@@ -15,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     //REGISTER
     const signup = async (userData) => {
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
             Cookies.set("token", token);
 
             setIsAuthenticated(true);
-            await CheckLogin();
+            await checkLogin();
 
         } catch (error) {
             setErrors([error.response?.data?.msg || "Error en registro"]);
@@ -35,22 +36,24 @@ export const AuthProvider = ({ children }) => {
     };
 
     //LOGIN
-    const signin = async (userData) => {
+    const signIn = async (userData) => {
         try {
-
             const res = await loginRequest(userData);
 
             const token = res.data.token;
+
             setAuthToken(token);
-            Cookies.set("token", token);
+            Cookies.set("token", token, { expires: 1 });
 
             setIsAuthenticated(true);
-            await CheckLogin();
+            setUser(res.data);
+
+            console.log("LOGIN OK");
 
         } catch (error) {
+            console.log("ERROR:", error);
             setErrors([error.response?.data?.msg || "Error en login"]);
         }
-
     }
 
     //LOGOUT
@@ -61,10 +64,12 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
     };
 
-    const CheckLogin = async () => {
+    const checkLogin = async () => {
         try {
-
             const token = Cookies.get("token");
+            console.log("TOKEN EN CHECK:", token);
+
+            console.log("TOKEN:", token);
 
             if (!token) {
                 setIsAuthenticated(false);
@@ -77,10 +82,13 @@ export const AuthProvider = ({ children }) => {
 
             const res = await verifyTokenRequest();
 
-            setUser(res.data.user);
+            console.log("VERIFY RESPONSE:", res.data);
+
+            setUser(res.data);
             setIsAuthenticated(true);
 
         } catch (error) {
+            console.log("ERROR VERIFY:", error);
             setIsAuthenticated(false);
             setUser(null);
         } finally {
@@ -90,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {
-        CheckLogin();
+        checkLogin();
     }, []);
 
     useEffect(() => {
@@ -108,7 +116,7 @@ export const AuthProvider = ({ children }) => {
                 errors,
                 loading,
                 signup,
-                signin,
+                signIn,
                 logout
             }}
         >

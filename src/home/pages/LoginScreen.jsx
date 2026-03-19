@@ -1,138 +1,75 @@
-import React, { useEffect, useState } from 'react'
-import accesorios from '../../api/accesoriosApi.js'
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export const LoginScreen = () => {
+  const { signIn, errors, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  const [usuarios, setUsuarios] = useState([]);
-
-  const [nuevoUsuario, setNuevoUsuario] = useState({
-    id: '',
-    nombre: '',
-    apellido: '',
-    email: '',
-    rol: ''
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
   });
 
-  const handleNuevoUsuario = (e) => {
-    const { name, value } = e.target;
-    setNuevoUsuario({
-      ...nuevoUsuario,
-      [name]: value,
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
     });
   };
 
-  const handleFormulario = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    createUsuario(nuevoUsuario);
-  }
-
-  const createUsuario = async () => {
-    try {
-
-      const res = await accesorios.post('/admin/createUsuario', nuevoUsuario);
-
-    } catch (error) {
-
-      console.log("Error al crear el usuario: ", error);
-
-    }
-  }
-
-  const getUsuarios = async () => {
-
-    try {
-      const res = await accesorios.get('/admin/usuarios');
-      const usuarios = res.data;
-
-      setUsuarios(usuarios)
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    signIn(form);
+  };
 
   useEffect(() => {
-    getUsuarios();
-  }, []);
-
+    console.log("isAuthenticated:", isAuthenticated);
+  if (isAuthenticated) {
+    navigate("/home");
+  }
+}, [isAuthenticated]);
 
   return (
-    <div>
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh"
+    }}>
+      <form onSubmit={handleSubmit} style={{ width: "300px" }}>
+        <h2>Login</h2>
 
-      <Form onSubmit={handleFormulario}>
-        <Form.Group>
-          <Form.Label>Nombre</Form.Label>
-          <Form.Control
-            type="text"
-            name="nombre"
-            onChange={(e) => handleNuevoUsuario(e)}
-            placeholder="Ingresa tu nombre"
-            className="form-input"></Form.Control>
-        </Form.Group>
-        <Form.Group className="form-group" controlId="formApellido">
-          <Form.Label>Apellido</Form.Label>
-          <Form.Control
-            type="text"
-            name="apellido"
-            //value={nuevoUsuario.apellido}
-            onChange={(e) => handleNuevoUsuario(e)}
-            placeholder="Ingresa el apellido"
-            className="form-input"
-          />
-        </Form.Group>
-        <Form.Group className="form-group" controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            //value={nuevoUsuario.email}
-            onChange={(e) => handleNuevoUsuario(e)}
-            placeholder="Ingresa el email"
-            className="form-input"
-          />
-        </Form.Group>
-        <div className="form-button-container">
-          <Button type="submit" className="submit-button">Guardar</Button>
-        </div>
-      </Form>
+        {errors.length > 0 && (
+          <div style={{ color: "red" }}>
+            {errors.map((err, i) => (
+              <p key={i}>{err}</p>
+            ))}
+          </div>
+        )}
 
-      <h1>LOGIN SCREEN</h1>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+          style={{ width: "100%", marginBottom: "10px" }}
+        />
 
-      <div style={{ padding: '2rem' }}>
-        <h2>Lista de Usuarios</h2>
-        <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Email</th>
-              <th>Rol</th>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+          style={{ width: "100%", marginBottom: "10px" }}
+        />
 
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.length > 0 ? (
-              usuarios.map((usuario) => (
-                <tr key={usuario.id}>
-                  <td>{usuario.id}</td>
-                  <td>{usuario.nombre}</td>
-                  <td>{usuario.apellido}</td>
-                  <td>{usuario.email}</td>
-                  <td>{usuario.rol}</td>
-
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5">No hay usuarios disponibles</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+        <button type="submit" style={{ width: "100%" }}>
+          Iniciar sesión
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
