@@ -1,21 +1,20 @@
 import { Link } from "react-router-dom";
-import "../home/styles/footer.css"; // Importamos los estilos del footer
+import "../home/styles/footer.css"; 
 
 export const Footer = () => {
   return (
     <footer className="footer-container">
       <div className="footer-content">
-        
-        {/* Columna 1: Información de la marca */}
+
+        {/* Nombre del proyecto en la primer columna */}
         <div className="footer-section">
           <h3>MiProyecto</h3>
           <p>
-            Haciendo la web un lugar mejor, paso a paso. 
-            Aquí puedes poner una breve descripción de tu aplicación.
+            
           </p>
         </div>
 
-        {/* Columna 2: Enlaces de navegación */}
+        {/* Enlaces de navegación en la segunda columna */}
         <div className="footer-section">
           <h3>Enlaces Rápidos</h3>
           <ul>
@@ -25,7 +24,7 @@ export const Footer = () => {
           </ul>
         </div>
 
-        {/* Columna 3: Redes Sociales o Legal */}
+        {/* Redes sociales en la tercer columna */}
         <div className="footer-section">
           <h3>Síguenos</h3>
           <ul>
@@ -37,7 +36,7 @@ export const Footer = () => {
 
       </div>
 
-      {/* Franja inferior con el Copyright */}
+      {/* Copyright */}
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} MiProyecto. Todos los derechos reservados.</p>
       </div>

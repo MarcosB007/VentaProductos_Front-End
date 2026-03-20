@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import "../styles/login.css";
 
 export const LoginScreen = () => {
   const { signIn, errors, isAuthenticated } = useAuth();
@@ -25,51 +26,48 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     //console.log("isAuthenticated:", isAuthenticated);
-  if (isAuthenticated) {
-    navigate("/home");
-  }
-}, [isAuthenticated]);
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated]);
 
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "100vh"
-    }}>
-      <form onSubmit={handleSubmit} style={{ width: "300px" }}>
-        <h2>Login</h2>
+    <div className="login-page-wrapper">
+      <div className="login-form-container">
+        <form onSubmit={handleSubmit}>
+          <h2>Login</h2>
 
-        {errors.length > 0 && (
-          <div style={{ color: "red" }}>
-            {errors.map((err, i) => (
-              <p key={i}>{err}</p>
-            ))}
-          </div>
-        )}
+          {errors.length > 0 && (
+            <div className="error-message-container">
+              {errors.map((err, i) => (
+                <p key={i}>{err}</p>
+              ))}
+            </div>
+          )}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          style={{ width: "100%", marginBottom: "10px" }}
-        />
+          <input
+            type="email"
+            name="email"
+            className="login-input"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          style={{ width: "100%", marginBottom: "10px" }}
-        />
+          <input
+            type="password"
+            name="password"
+            className="login-input"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit" style={{ width: "100%" }}>
-          Iniciar sesión
-        </button>
-      </form>
+          <button type="submit" className="login-button">
+            Iniciar sesión
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

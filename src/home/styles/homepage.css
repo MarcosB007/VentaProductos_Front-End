@@ -1,0 +1,46 @@
+.card {
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    background-color: rgb(119, 184, 236);
+}
+
+.card:hover {
+    transform: translateY(-5px); /* La card sube un poquito */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Sombra más intensa */
+}
+
+.card img {
+    width: 100%;       /* Ocupa todo el ancho de la card */
+    height: 350px;     /* Define una altura fija igual para todas */
+    object-fit: cover; /* Recorta la imagen para que llene el espacio sin deformarse */
+    display: block;    /* Elimina espacios extra en la base */
+}
+
+.home-page-wrapper {
+    /* Reemplaza 'ruta/a/tu/imagen.jpg' por el nombre de tu archivo */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), 
+                      url("../../images/fondo4.jpg"); 
+    
+    background-size: cover;           /* Cubre toda la pantalla */
+    background-position: center;      /* Centra la imagen */
+    background-repeat: no-repeat;
+    
+    /* EL TRUCO PARA EL EFECTO FIJO */
+    background-attachment: fixed;     
+    
+    min-height: 100vh;                /* Altura mínima de toda la pantalla */
+    padding: 40px 20px;               /* Espacio para que el contenido no pegue a los bordes */
+}
+
+/* Contenedor para las cards */
+.productos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: left; /* Alinea las cards a la izquierda */
+    margin: 0 auto; /* Centra el grupo de productos */
+}

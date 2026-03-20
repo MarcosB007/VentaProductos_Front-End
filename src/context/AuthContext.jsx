@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
             const token = res.data.token;
 
             setAuthToken(token);
-            Cookies.set("token", token, { expires: 1 });
+            Cookies.set("token", token, { expires: 1/12 }); // Expira en 2 horas
 
             setIsAuthenticated(true);
             setUser(res.data);
