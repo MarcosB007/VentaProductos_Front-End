@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "../styles/login.css";
 
@@ -67,6 +67,10 @@ export const LoginScreen = () => {
             Iniciar sesión
           </button>
         </form>
+
+        <div className="mt-3">
+          <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
+        </div>
       </div>
     </div>
   );

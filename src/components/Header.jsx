@@ -20,10 +20,10 @@ export const Header = () => {
           <>
             {/* Opciones cuando el usuario SÍ ha iniciado sesión */}
             <span className="welcome-text">Hola, {user?.username || "Usuario"}</span>
-            <Link to="/home" className="nav-link">Inicio</Link>
+            {/* <Link to="/home" className="nav-link">Inicio</Link>
             <Link to="/home" className="nav-link">Perros</Link>
-            <Link to="/home" className="nav-link">Facturas</Link>
-            <Link to="/home" className="nav-link">Libreria</Link>
+            <Link to="/home" className="nav-link">Facturas</Link> */}
+            <Link to="/carrito" className="nav-link">Mi carrito</Link>
             {/* <Link to="/dashboard" className="nav-link">Dashboard</Link> */}
             
             <button onClick={logout} className="logout-btn">
