@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import accesorios from '../../api/accesoriosApi.js'
@@ -7,6 +7,7 @@ import { Header } from "../../components/Header.jsx";
 import { Footer } from "../../components/Footer.jsx";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import "../styles/homepage.css";
+import Swal from "sweetalert2";
 
 export const HomePage = () => {
 
@@ -14,6 +15,7 @@ export const HomePage = () => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
     const [busqueda, setBusqueda] = useState("");
+    const [carrito_id, setCarrito_id] = useState("");
 
     // ESTADO PARA FILTRAR: Guardamos el ID de la categoría elegida
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
@@ -150,10 +152,67 @@ export const HomePage = () => {
         }
     };
 
+    //FUNCION PARA OBTENER EL CARRITO DEL USUARIO
+    const obtenerCarrito = async () => {
+        try {
+            const idUsuario = user.id;
+            //console.log("ID del usuario para obtener el carrito: ", idUsuario);
+            const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
+            setCarrito_id(res.data.id);
+        } catch (error) {
+            console.log("Error al obtener el carrito: ", error);
+        }
+    }
+
+    const handleCarrito = (producto_id, cantidad, precio) => {
+
+        const nuevoProductoParaCarrito = {
+            carrito_id: carrito_id,
+            producto_id: producto_id,
+            cantidad: cantidad,
+            precio_unitario: precio
+        };
+        agregarAlCarrito(nuevoProductoParaCarrito);
+    };
+
+    //CAPTURAR PRODUCTO PARA AGREGARLO AL CARRITO
+    const agregarAlCarrito = async (datosProducto) => {
+
+        console.log("Datos del producto a agregar al carrito: ", datosProducto);
+        if (!datosProducto.carrito_id) {
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo encontrar un carrito activo para tu usuario.",
+                icon: "error"
+            });
+            return;
+        }
+        try {
+            console.log("Enviando al backend: ", datosProducto);
+            await accesorios.post("/admin/agregarAlCarrito", datosProducto);
+
+            Swal.fire({
+                title: "Producto agregado al carrito",
+                icon: "success",
+                timer: 1500
+            });
+        } catch (error) {
+            console.log("Error al agregar el producto al carrito: ", error);
+            Swal.fire({
+                title: "Error",
+                text: "No se pudo agregar el producto",
+                icon: "error"
+            });
+        }
+    }
+
     useEffect(() => {
         obtenerProductos();
         obtenerCategorias();
-    }, []);
+        if (user?.id) {
+            obtenerCarrito();
+        }
+    }, [user]); // Se ejecuta cuando el objeto 'user' cambia (al loguearse)
 
     return (
         <>
@@ -163,6 +222,7 @@ export const HomePage = () => {
                 <h1>HOME PAGE</h1>
                 <h1>Bienvenido/a, {user?.username}</h1>
 
+                {/* FORMULARIO DE CREACIÓN DE PRODUCTO */}
                 {isAuthenticated && user.rol === "admin" && (
                     <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
                         <h2>Crear producto</h2>
@@ -246,6 +306,11 @@ export const HomePage = () => {
                                         <strong>Precio:</strong> ${prod.precio_lista}
                                     </Card.Text>
                                     <Button variant="primary">Comprar</Button>
+
+                                    {/* BOTON PARA AGREGAR PRODUCTO AL CARRITO */}
+                                    <Button variant="primary" onClick={() => handleCarrito(prod.id, 1, prod.precio_lista)}>
+                                        Agregar al carrito
+                                    </Button>
                                     {isAuthenticated && user.rol === "admin" && (
                                         <Button
                                             onClick={() => EliminarProducto(prod.id)}
