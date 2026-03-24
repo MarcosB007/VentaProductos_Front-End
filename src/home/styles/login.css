@@ -1,7 +1,8 @@
 /* Contenedor principal con imagen de fondo */
 .login-page-wrapper {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                url("../../images/fondo5.jpg"); /* REEMPLAZA CON TU URL */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("../../images/fondo5.jpg");
+    /* REEMPLAZA CON TU URL */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -33,24 +34,26 @@
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* Asegura que el padding no agrande el input */
+    box-sizing: border-box;
+    /* Asegura que el padding no agrande el input */
 }
 
 /* Estilos para el botón */
 .login-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+    background-color: #000;
+    color: #fff;
+    padding: 12px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
     font-weight: bold;
-    transition: background 0.3s ease;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .login-button:hover {
-    background-color: #0056b3;
+    background-color: #333;
 }
 
 /* Mensajes de error */
@@ -71,23 +74,27 @@
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px); /* Empieza 20px más abajo */
+        transform: translateY(20px);
+        /* Empieza 20px más abajo */
     }
+
     to {
         opacity: 1;
-        transform: translateY(0);    /* Termina en su posición original */
+        transform: translateY(0);
+        /* Termina en su posición original */
     }
 }
 
 /* 2. Aplicamos la animación al contenedor del formulario */
 .login-form-container {
-    background: rgba(255, 255, 255, 0.9);
+    background: #caaf9c;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     width: 350px;
     text-align: center;
-    
+
     /* PROPIEDADES DE ANIMACIÓN */
-    animation: fadeInUp 0.8s ease-out; /* Dura 0.8 segundos con un final suave */
+    animation: fadeInUp 0.8s ease-out;
+    /* Dura 0.8 segundos con un final suave */
 }

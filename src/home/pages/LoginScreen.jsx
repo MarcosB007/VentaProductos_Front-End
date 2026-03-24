@@ -69,7 +69,7 @@ export const LoginScreen = () => {
         </form>
 
         <div className="mt-3">
-          <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
+          <p>¿No tienes cuenta? <Link to="/register" className="text-black">Regístrate aquí</Link></p>
         </div>
       </div>
     </div>
