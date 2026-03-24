@@ -16,6 +16,7 @@ export const HomePage = () => {
     const [productos, setProductos] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     const [carrito_id, setCarrito_id] = useState("");
+    const [productosEnCarrito, setProductosEnCarrito] = useState([]);
 
     // ESTADO PARA FILTRAR: Guardamos el ID de la categoría elegida
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
@@ -206,12 +207,41 @@ export const HomePage = () => {
         }
     }
 
+    // FUNCION PARA OBTENER LOS PRODUCTOS QUE YA ESTAN EN EL CARRITO 
+    const obtenerProductosEnCarrito = async () => {
+        try {
+
+            const res = await accesorios.get(`/admin/getProductosCarrito/${carrito_id}`);
+            const ids = res.data.map(item => item.producto_id);
+            setProductosEnCarrito(ids);
+            
+
+        } catch (error) {
+            console.log("Error al obtener los productos del carrito: ", error);
+        }
+    }
+
+    const manejarQuitarDelCarrito = async (producto_id) => {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+    useEffect(() => {
+        if (carrito_id) {
+            obtenerProductosEnCarrito();
+        }
+
+    }, [carrito_id]);
+
     useEffect(() => {
         obtenerProductos();
         obtenerCategorias();
         if (user?.id) {
             obtenerCarrito();
-        }
+        }        
     }, [user]); // Se ejecuta cuando el objeto 'user' cambia (al loguearse)
 
     return (
@@ -307,10 +337,27 @@ export const HomePage = () => {
                                     </Card.Text>
                                     <Button variant="primary">Comprar</Button>
 
-                                    {/* BOTON PARA AGREGAR PRODUCTO AL CARRITO */}
+                                    {/* LOGICA PARA MOSTRAR EL BOTON DE AGREGAR AL CARRITO O QUITAR DEL CARRITO */}
+                                    {productosEnCarrito.includes(prod.id) ? (
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => manejarQuitarDelCarrito(prod.id)}
+                                        >
+                                            Quitar del carrito
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => handleCarrito(prod.id, 1, prod.precio_lista)}
+                                        >
+                                            Agregar al carrito
+                                        </Button>
+                                    )}
+
+                                    {/* BOTON PARA AGREGAR PRODUCTO AL CARRITO
                                     <Button variant="primary" onClick={() => handleCarrito(prod.id, 1, prod.precio_lista)}>
                                         Agregar al carrito
-                                    </Button>
+                                    </Button> */}
                                     {isAuthenticated && user.rol === "admin" && (
                                         <Button
                                             onClick={() => EliminarProducto(prod.id)}
