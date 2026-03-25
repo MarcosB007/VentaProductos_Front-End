@@ -38,6 +38,10 @@ export const CarritoPage = () => {
         }
     }
 
+    const totalCarrito = productos.reduce((acumulador, prod) => {
+        return acumulador + (prod.precio_lista * 1);
+    }, 0);
+
     useEffect(() => {
         if (carrito_id) {
             obtenerProductosEnCarrito();
@@ -111,7 +115,7 @@ export const CarritoPage = () => {
                             {/* SECCIÓN FINAL: Total y botón de compra general */}
                             <div className="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
                                 {/* Aquí iría tu lógica para sumar el total */}
-                                <h4 className="me-4 mb-0">Total: $0.00</h4>
+                                <h4 className="me-4 mb-0">Total: ${totalCarrito.toFixed(2)}</h4>
                                 <Button variant="success" size="lg">
                                     Finalizar compra
                                 </Button>
