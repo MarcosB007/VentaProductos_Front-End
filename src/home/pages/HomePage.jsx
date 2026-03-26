@@ -8,6 +8,7 @@ import { Footer } from "../../components/Footer.jsx";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import "../styles/homepage.css";
 import Swal from "sweetalert2";
+import { useCarrito } from "../../context/CarritoContext.jsx";
 
 export const HomePage = () => {
 
@@ -15,7 +16,7 @@ export const HomePage = () => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
     const [busqueda, setBusqueda] = useState("");
-    const [carrito_id, setCarrito_id] = useState("");
+    const { carrito_id } = useCarrito();
     const [productosEnCarrito, setProductosEnCarrito] = useState([]);
 
     // ESTADO PARA FILTRAR: Guardamos el ID de la categoría elegida
@@ -153,17 +154,16 @@ export const HomePage = () => {
         }
     };
 
-    //FUNCION PARA OBTENER EL CARRITO DEL USUARIO
-    const obtenerCarrito = async () => {
-        try {
-            const idUsuario = user.id;
-            //console.log("ID del usuario para obtener el carrito: ", idUsuario);
-            const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
-            setCarrito_id(res.data.id);
-        } catch (error) {
-            console.log("Error al obtener el carrito: ", error);
-        }
-    }
+    //FUNCION PARA OBTENER EL CARRITO DEL USUARIO // AGREGAR AL NUEVO CONTEXTO DEL CARRITO
+    // const obtenerCarrito = async () => {
+    //     try {
+    //         const idUsuario = user.id;
+    //         const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
+    //         setCarrito_id(res.data.id);
+    //     } catch (error) {
+    //         console.log("Error al obtener el carrito: ", error);
+    //     }
+    // }
 
     const handleCarrito = (producto_id, cantidad, precio) => {
 
@@ -223,7 +223,7 @@ export const HomePage = () => {
         }
     }
 
-    // FUNCION PARA QUITAR UN PRODUCTO DEL CARRITO
+    // FUNCION PARA QUITAR UN PRODUCTO DEL CARRITO   // AGREGAR AL NUEVO CONTEXTO DEL CARRITO
     const quitarDelCarrito = async (producto_id) => {
         
         Swal.fire({
@@ -274,9 +274,7 @@ export const HomePage = () => {
     useEffect(() => {
         obtenerProductos();
         obtenerCategorias();
-        if (user?.id) {
-            obtenerCarrito();
-        }
+        
     }, [user]); // Se ejecuta cuando el objeto 'user' cambia (al loguearse)
 
     return (

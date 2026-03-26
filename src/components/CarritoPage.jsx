@@ -6,8 +6,6 @@ import { Footer } from "./Footer.jsx";
 import { Button, Card } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 
-// ... tus otras importaciones (Header, Footer, etc.)
-
 export const CarritoPage = () => {
 
     const { isAuthenticated, user } = useAuth();
@@ -30,7 +28,7 @@ export const CarritoPage = () => {
     const obtenerCarrito = async () => {
         try {
             const idUsuario = user.id;
-            //console.log("ID del usuario para obtener el carrito: ", idUsuario);
+            
             const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
             setCarrito_id(res.data.id);
         } catch (error) {
@@ -114,7 +112,7 @@ export const CarritoPage = () => {
 
                             {/* SECCIÓN FINAL: Total y botón de compra general */}
                             <div className="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
-                                {/* Aquí iría tu lógica para sumar el total */}
+                                
                                 <h4 className="me-4 mb-0">Total: ${totalCarrito.toFixed(2)}</h4>
                                 <Button variant="success" size="lg">
                                     Finalizar compra

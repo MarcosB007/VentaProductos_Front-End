@@ -1,4 +1,5 @@
 import { AuthProvider } from "./context/AuthContext";
+import { CarritoProvider } from "./context/CarritoContext";
 import { AppRouter } from "./routes/AppRouter"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -6,7 +7,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <AppRouter/>
+      <CarritoProvider>
+        <AppRouter/>
+      </CarritoProvider>
     </AuthProvider>
   )
 }
