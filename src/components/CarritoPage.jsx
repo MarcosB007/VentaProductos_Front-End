@@ -5,12 +5,14 @@ import { Header } from "./Header.jsx";
 import { Footer } from "./Footer.jsx";
 import { Button, Card } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
+import { useCarrito } from "../context/CarritoContext.jsx";
 
 export const CarritoPage = () => {
 
     const { isAuthenticated, user } = useAuth();
     const [productos, setProductos] = useState([])
-    const [carrito_id, setCarrito_id] = useState("");
+    //const [carrito_id, setCarrito_id] = useState("");
+    const { carrito_id, quitarDelCarrito } = useCarrito();
 
     //FUNCION PARA OBTENER LOS PRODUCTOS DEL CARRITO
     const obtenerProductosEnCarrito = async () => {
@@ -25,16 +27,16 @@ export const CarritoPage = () => {
     }
 
     //FUNCION PARA OBTENER EL CARRITO DEL USUARIO
-    const obtenerCarrito = async () => {
-        try {
-            const idUsuario = user.id;
-            
-            const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
-            setCarrito_id(res.data.id);
-        } catch (error) {
-            console.log("Error al obtener el carrito: ", error);
-        }
-    }
+    // const obtenerCarrito = async () => {
+    //     try {
+    //         const idUsuario = user.id;
+
+    //         const res = await accesorios.get(`/admin/buscarCarrito/${idUsuario}`);
+    //         setCarrito_id(res.data.id);
+    //     } catch (error) {
+    //         console.log("Error al obtener el carrito: ", error);
+    //     }
+    // }
 
     const totalCarrito = productos.reduce((acumulador, prod) => {
         return acumulador + (prod.precio_lista * 1);
@@ -47,11 +49,11 @@ export const CarritoPage = () => {
 
     }, [carrito_id]);
 
-    useEffect(() => {
-        if (user?.id) {
-            obtenerCarrito();
-        }
-    }, [user]); // Se ejecuta cuando el objeto 'user' cambia (al loguearse)
+    // useEffect(() => {
+    //     if (user?.id) {
+    //         obtenerCarrito();
+    //     }
+    // }, [user]); // Se ejecuta cuando el objeto 'user' cambia (al loguearse)
 
 
     return (
@@ -101,7 +103,13 @@ export const CarritoPage = () => {
 
                                             {/* COLUMNA 4: Botón para quitar del carrito */}
                                             <td>
-                                                <Button variant="outline-danger" size="sm">
+                                                <Button
+                                                    variant="outline-danger" size="sm" onClick={async () => {
+                                                        await quitarDelCarrito(prod.id);
+
+                                                        setProductos((prevProductos) => prevProductos.filter(p => p.id !== prod.id));
+                                                    }}
+                                                >
                                                     Quitar
                                                 </Button>
                                             </td>
@@ -112,7 +120,7 @@ export const CarritoPage = () => {
 
                             {/* SECCIÓN FINAL: Total y botón de compra general */}
                             <div className="d-flex justify-content-end align-items-center mt-4 pt-3 border-top">
-                                
+
                                 <h4 className="me-4 mb-0">Total: ${totalCarrito.toFixed(2)}</h4>
                                 <Button variant="success" size="lg">
                                     Finalizar compra

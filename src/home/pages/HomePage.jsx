@@ -16,7 +16,7 @@ export const HomePage = () => {
     const [categorias, setCategorias] = useState([]);
     const [productos, setProductos] = useState([]);
     const [busqueda, setBusqueda] = useState("");
-    const { carrito_id } = useCarrito();
+    const { carrito_id, quitarDelCarrito } = useCarrito();
     const [productosEnCarrito, setProductosEnCarrito] = useState([]);
 
     // ESTADO PARA FILTRAR: Guardamos el ID de la categoría elegida
@@ -223,46 +223,57 @@ export const HomePage = () => {
         }
     }
 
+    const handleQuitarDelCarrito = async (producto_id) => {
+        try {
+            await quitarDelCarrito(producto_id);
+            const nuevosProductos = productosEnCarrito.filter(id => id !== producto_id);
+            setProductosEnCarrito(nuevosProductos);
+
+        } catch (error) {
+            console.log("Error al quitar el producto del carrito: ", error);
+        }
+    }
+
     // FUNCION PARA QUITAR UN PRODUCTO DEL CARRITO   // AGREGAR AL NUEVO CONTEXTO DEL CARRITO
-    const quitarDelCarrito = async (producto_id) => {
+    // const quitarDelCarrito = async (producto_id) => {
         
-        Swal.fire({
-            title: "¿Estás seguro?",
-            text: "¡No podrás revertir esto!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, quitar del carrito",
-            cancelButtonText: "Cancelar"
-        }).then(async (result) => {
+    //     Swal.fire({
+    //         title: "¿Estás seguro?",
+    //         text: "¡No podrás revertir esto!",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#3085d6",
+    //         cancelButtonColor: "#d33",
+    //         confirmButtonText: "Sí, quitar del carrito",
+    //         cancelButtonText: "Cancelar"
+    //     }).then(async (result) => {
 
-            if (result.isConfirmed) {
-                try {
+    //         if (result.isConfirmed) {
+    //             try {
                     
-                    await accesorios.delete(`/admin/quitarDelCarrito/${carrito_id}/${producto_id}`);
+    //                 await accesorios.delete(`/admin/quitarDelCarrito/${carrito_id}/${producto_id}`);
 
-                    setProductosEnCarrito((prev) => prev.filter(id => id !== producto_id));
+    //                 setProductosEnCarrito((prev) => prev.filter(id => id !== producto_id));
 
-                    Swal.fire({
-                        title: "Producto quitado del carrito",
-                        text: "El producto ha sido eliminado del carrito.",
-                        icon: "success",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+    //                 Swal.fire({
+    //                     title: "Producto quitado del carrito",
+    //                     text: "El producto ha sido eliminado del carrito.",
+    //                     icon: "success",
+    //                     timer: 1500,
+    //                     showConfirmButton: false
+    //                 });
 
-                } catch (error) {
-                    console.log("Error al quitar el producto: ", error);
-                    Swal.fire({
-                        title: "Error",
-                        text: "Hubo un problema al intentar quitar el producto",
-                        icon: "error"
-                    });
-                }
-            }
-        });
-    };
+    //             } catch (error) {
+    //                 console.log("Error al quitar el producto: ", error);
+    //                 Swal.fire({
+    //                     title: "Error",
+    //                     text: "Hubo un problema al intentar quitar el producto",
+    //                     icon: "error"
+    //                 });
+    //             }
+    //         }
+    //     });
+    // };
 
     useEffect(() => {
         if (carrito_id) {
@@ -374,7 +385,7 @@ export const HomePage = () => {
                                     {productosEnCarrito.includes(prod.id) ? (
                                         <Button
                                             variant="danger"
-                                            onClick={() => quitarDelCarrito(prod.id)}
+                                            onClick={() => handleQuitarDelCarrito(prod.id)}
                                         >
                                             Quitar del carrito
                                         </Button>
